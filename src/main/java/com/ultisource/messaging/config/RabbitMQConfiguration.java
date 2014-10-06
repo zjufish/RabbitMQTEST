@@ -1,5 +1,6 @@
 package com.ultisource.messaging.config;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -20,6 +21,7 @@ import com.ultisource.messaging.service.listener.QueueMessageListener;
 public class RabbitMQConfiguration {
 
 	private static final String QUEUE_NAMES="main,main-timeout,main-dlx";
+	private static final Logger logger = Logger.getLogger(RabbitMQConfiguration.class);
 	
 	@Bean
 	public ConnectionFactory connectionFactory(){
@@ -30,6 +32,7 @@ public class RabbitMQConfiguration {
 //		factory.setPublisherConfirms(true);
 //		factory.setPublisherReturns(true);
 //		factory.setChannelCacheSize(1);
+		logger.info(" --- Connection Factory Creationg Successful --- ");
 		return factory;
 	}
 	
@@ -73,6 +76,7 @@ public class RabbitMQConfiguration {
 		container.setQueueNames("main");
 		container.setMessageListener(new QueueMessageListener(queueMessageService()));
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+		logger.info("--- Listener Registered for the main Queue --- ");
 		return container;
 	}
 	

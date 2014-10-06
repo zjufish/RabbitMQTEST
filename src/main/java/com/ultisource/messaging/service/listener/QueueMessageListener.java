@@ -3,15 +3,16 @@ package com.ultisource.messaging.service.listener;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.rabbitmq.client.Channel;
 import com.ultisource.messaging.service.QueueMessageService;
 
 public class QueueMessageListener implements ChannelAwareMessageListener {
+	
+	private static final Logger logger = Logger.getLogger(QueueMessageListener.class);
 	
 	private QueueMessageService messageService;
 	
@@ -23,9 +24,9 @@ public class QueueMessageListener implements ChannelAwareMessageListener {
 
 	public void onMessage(Message msg, Channel channel) throws Exception {
 		String rountingKey = msg.getMessageProperties().getReceivedRoutingKey();
-		System.out.println(" --- Received --- " + msg);
-		System.out.println(" --- Exchange --- " + msg.getMessageProperties().getReceivedExchange());
-		System.out.println(" --- Routing Key --- " + rountingKey);
+		logger.info(" --- Received --- " + msg);
+		logger.info(" --- Exchange --- " + msg.getMessageProperties().getReceivedExchange());
+		logger.info(" --- Routing Key --- " + rountingKey);
 		
 		Integer counter = decrementCounter(msg);
 		if(counter!=null){
@@ -44,7 +45,7 @@ public class QueueMessageListener implements ChannelAwareMessageListener {
 		Integer counter = null;
 		if(objCounter!=null && objCounter instanceof Integer){
 			counter = (Integer)objCounter;
-			System.out.println( " --- No. of Counts ---" + counter--);
+			logger.info( " --- No. of Counts ---" + counter--);
 			headerMap.put(COUNTER, counter);
 		}
 		return counter;

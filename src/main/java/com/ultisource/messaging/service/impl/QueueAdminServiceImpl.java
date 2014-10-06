@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import com.ultisource.messaging.service.QueueAdminService;
 
 @Component
 public class QueueAdminServiceImpl implements QueueAdminService {
-
+	
+	private static final Logger logger = Logger.getLogger(QueueAdminServiceImpl.class);
+	
 	@Autowired
 	private ConnectionFactory connectionFactory;
 	
@@ -62,17 +65,21 @@ public class QueueAdminServiceImpl implements QueueAdminService {
 	}
 	
 	private void createExchange(String exchangeName) throws IOException {
+		logger.info(" --- Creating Exchange ---" + exchangeName);
 		if(channel!=null){
 			channel.exchangeDeclare(exchangeName, EXCHANGE_TYPE_DIRECT,true);
 		}
 	}
 	
 	private void createAndBindQueue(String exchangeName,String queueName) throws IOException {
+		logger.info("--- Creating and Binding Queue with Name " + queueName + " Exchange Name " + exchangeName);
 		channel.queueDeclare(queueName, true, false, false, new HashMap<String,Object>());
 		channel.queueBind(queueName, exchangeName, queueName);
 	}
 	
 	private void createAndBindQueue(String exchangeName,String queueName,String dlxExchangeName,String dlxRoutingKey) throws IOException {
+		logger.info("--- Creating and Binding Queue with Name " + queueName + " Exchange Name " + exchangeName);
+		logger.info(" --- Setting DLX  "+ dlxExchangeName + " DLQ " + dlxRoutingKey);
 		Map<String,Object> properties = getDLXProps(dlxExchangeName, dlxRoutingKey);
 		channel.queueDeclare(queueName, true, false, false, properties);
 		channel.queueBind(queueName, exchangeName, queueName);

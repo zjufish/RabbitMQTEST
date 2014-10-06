@@ -1,5 +1,6 @@
 package com.ultisource.messaging.service.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageDeliveryMode;
@@ -12,6 +13,7 @@ import com.ultisource.messaging.service.QueueMessageService;
 @Service
 public class QueueMessageServiceImpl implements QueueMessageService {
 
+	private static final Logger logger = Logger.getLogger(QueueMessageServiceImpl.class);
 	
 	@Autowired
 	private AmqpTemplate template;
@@ -23,6 +25,7 @@ public class QueueMessageServiceImpl implements QueueMessageService {
 		MessageProperties props = new MessageProperties();
 		props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
 		template.send(exchangeName,routingKey,msg);
+		logger.info(" --- Message Published to Exchange with Routing Key " + routingKey  + " Exchange Name " + exchangeName);
 	}
 
 	/**

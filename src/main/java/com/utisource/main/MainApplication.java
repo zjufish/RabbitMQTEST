@@ -1,4 +1,4 @@
-package com.test;
+package com.utisource.main;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -15,7 +15,7 @@ public class MainApplication {
 
 		ApplicationContext context = new AnnotationConfigApplicationContext(RabbitMQConfiguration.class);
 		QueueAdminService service = context.getBean(QueueAdminService.class);
-
+//		service.createQueue("main");
 		QueueMessageService sendReceiveService = context.getBean(QueueMessageService.class);
 		MessageProperties props = new MessageProperties();
 		props.setExpiration("10000");
